@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kantor Agen Ozami - DEMO</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#0b1020;color:#dfe6ff;font:13px system-ui,sans-serif;display:flex;flex-direction:column;height:100vh}
+header{padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1d2748;font-size:12px}
+header b{letter-spacing:2px;color:#8fa4ff}
+.tag{background:#3a2a00;color:#ffcf5a;padding:2px 8px;border-radius:10px;font-size:11px}
+main{flex:1;display:flex;min-height:0;flex-wrap:wrap}
+#wrap{flex:2 1 320px;position:relative;min-height:260px}
+canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
+aside{flex:1 1 220px;max-width:100%;border-left:1px solid #1d2748;display:flex;flex-direction:column;min-height:0;max-height:100%}
+#feed{flex:1;overflow:auto;padding:8px}
+.m{display:flex;gap:8px;margin-bottom:8px;animation:in .3s}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.av{width:28px;height:28px;border-radius:6px;flex:none;display:grid;place-items:center;font-weight:700;color:#0b1020}
+.m small{color:#7f8bb5;font-size:10px;margin-left:4px}
+.m div div{color:#aab4d8;margin-top:1px}
+#info{padding:8px;border-top:1px solid #1d2748;font-size:12px;min-height:74px;color:#aab4d8}
+#info b{color:#fff}
+.btn{display:flex;gap:6px;padding:8px;border-top:1px solid #1d2748}
+button{flex:1;background:#17214a;color:#cfd8ff;border:1px solid #2a3a7a;border-radius:6px;padding:7px;font-size:12px}
+</style></head><body>
+<header><b>KANTOR AGEN OZAMI</b><span class="tag">DEMO - data simulasi</span></header>
+<main>
+<div id="wrap"><canvas id="c"></canvas></div>
+<aside>
+<div id="feed"></div>
+<div id="info">Ketuk karakter untuk lihat detail.</div>
+<div class="btn"><button id="b1">Simulasi rilis CRM</button><button id="b2">Simulasi Hermes error</button></div>
+</aside>
+</main>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const TW=56,TH=28,N=8;
+let W,H,OX,OY,S;
+function resize(){const r=cv.parentElement.getBoundingClientRect();const d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;W=cv.width;H=cv.height;S=Math.min(W/((N*2)*TW/2+80),H/((N)*TH+190))*1;OX=W/2;OY=H*0.30}
+addEventListener('resize',resize);resize();
+const iso=(x,y)=>[OX+(x-y)*TW/2*S,OY+(x+y)*TH/2*S];
+function poly(pts,col,stroke){ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=col;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
+function box(x,y,w,d,h,top,left,right){const z=h*S;const a=iso(x,y),b=iso(x+w,y),c=iso(x+w,y+d),e=iso(x,y+d);
+ poly([e,c,[c[0],c[1]-z],[e[0],e[1]-z]],left);poly([c,b,[b[0],b[1]-z],[c[0],c[1]-z]],right);
+ poly([[e[0],e[1]-z],[c[0],c[1]-z],[b[0],b[1]-z],[a[0],a[1]-z]],top)}
+const A=[
+ {id:'claude',n:'Claude (sesi VPS)',c:'#ff8a4c',desk:[2,2],role:'Pengerjaan kode & rilis',st:'idle'},
+ {id:'hermes',n:'Hermes',c:'#8f7bff',desk:[5,2],role:'Bot Discord Ozami HQ',st:'idle'},
+ {id:'zamisyak',n:'Zamisyak',c:'#35d0a0',desk:[2,5],role:'Dashboard konten AI',st:'idle'},
+ {id:'web',n:'Pintu Web',c:'#4cc3ff',desk:[5,5],role:'Situs & aaPanel',st:'idle'}];
+A.forEach(a=>{a.x=a.desk[0]+.5;a.y=a.desk[1]+1.6;a.tx=a.x;a.ty=a.y;a.say='';a.sayT=0;a.task='-';a.t=Math.random()*9});
+const cooler=[7,.8];
+const feed=document.getElementById('feed');
+function now(){return new Date(Date.now()+7*36e5).toISOString().substr(11,5)}
+function log(a,t){const d=document.createElement('div');d.className='m';
+ d.innerHTML=`<div class="av" style="background:${a.c}">${a.n[0]}</div><div><b>${a.n}</b><small>${now()} WIB</small><div>${t}</div></div>`;
+ feed.appendChild(d);feed.scrollTop=feed.scrollHeight;if(feed.children.length>40)feed.removeChild(feed.firstChild);
+ a.say=t.length>26?t.slice(0,24)+'…':t;a.sayT=240;a.task=t}
+const script={
+ claude:['membaca catatan-remote.md','menjalankan pintu uji tes','tes hijau 42/42','pintu rilis cek: aman','menunggu konfirmasi Owner'],
+ hermes:['balas pesan #vps-ops','cron: rekap harian','memuat skill baru','kirim kabar ke Discord'],
+ zamisyak:['render carousel (cover putih)','cek niche: realita usaha','semua tes lulus','menunggu antrean'],
+ web:['pintu web cadangkan ukara.co.id','cek SSL semua situs','curl -sI ozami.co.id: 200','baca log nginx']};
+function work(a){const s=script[a.id];log(a,s[Math.floor(Math.random()*s.length)]);a.st='kerja'}
+setInterval(()=>work(A[Math.floor(Math.random()*A.length)]),2600);
+setTimeout(()=>A.forEach(work),300);
+document.getElementById('b1').onclick=()=>{const c=A[0];['pintu rilis cek...','dump DB produksi','tes modul: hijau','cadangan selesai','RILIS BERHASIL - /ozami/sehat OK'].forEach((t,i)=>setTimeout(()=>log(c,t),i*900))};
+document.getElementById('b2').onclick=()=>{const h=A[1];log(h,'⚠ error: koneksi Discord putus');h.st='error';setTimeout(()=>log(A[0],'cek pintu kotak logs ozami-hermes'),1200);setTimeout(()=>{log(A[0],'minta izin Owner restart Hermes');},2400);setTimeout(()=>{h.st='kerja';log(h,'tersambung kembali')},4200)};
+function person(a,t){const [px,py]=iso(a.x,a.y);const s=S*2;const bob=a.walk?Math.sin(t/90)*2*s/2:0;
+ ctx.fillStyle='#0006';ctx.beginPath();ctx.ellipse(px,py,7*s,3*s,0,0,7);ctx.fill();
+ ctx.fillStyle='#2a2f4a';ctx.fillRect(px-4*s,py-8*s+bob,3*s,8*s);ctx.fillRect(px+1*s,py-8*s-bob,3*s,8*s);
+ ctx.fillStyle=a.c;ctx.fillRect(px-5*s,py-18*s,10*s,10*s);
+ ctx.fillStyle='#f1c9a0';ctx.fillRect(px-4*s,py-25*s,8*s,7*s);
+ ctx.fillStyle='#222';ctx.fillRect(px-4*s,py-26*s,8*s,3*s);
+ if(a.st==='error'){ctx.fillStyle='#ff4d4d';ctx.font=`bold ${14*S}px sans-serif`;ctx.fillText('!',px+6*s,py-24*s)}
+ if(a.sayT>0){const tx=a.say;ctx.font=`${10*S*1.3}px system-ui`;const w=ctx.measureText(tx).width+12;const bx=px-w/2,by=py-48*S*1.4;
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.roundRect(bx,by,w,18*S*1.3,5);ctx.fill();ctx.fillStyle='#0b1020';ctx.fillText(tx,bx+6,by+13*S*1.3)}
+ a.hit=[px-8*s,py-28*s,16*s,30*s]}
+function draw(t){ctx.clearRect(0,0,W,H);
+ // lantai
+ for(let x=0;x<N;x++)for(let y=0;y<N;y++){const p=[iso(x,y),iso(x+1,y),iso(x+1,y+1),iso(x,y+1)];poly(p,(x+y)%2?'#c9a36b':'#bf9860')}
+ // dinding belakang
+ const wh=120*S;
+ for(let i=0;i<N;i++){let a=iso(i,0),b=iso(i+1,0);poly([a,b,[b[0],b[1]-wh],[a[0],a[1]-wh]],'#8fb7d8');
+  if(i%2==0){const m=.12;const a2=iso(i+.1,0),b2=iso(i+.9,0);poly([[a2[0],a2[1]-wh*.2],[b2[0],b2[1]-wh*.2],[b2[0],b2[1]-wh*.85],[a2[0],a2[1]-wh*.85]],'#cfe8ff')}}
+ for(let i=0;i<N;i++){let a=iso(0,i),b=iso(0,i+1);poly([a,b,[b[0],b[1]-wh],[a[0],a[1]-wh]],'#6f93b3')}
+ // papan tugas
+ {const a=iso(0,2.2),b=iso(0,5.2);poly([[a[0],a[1]-wh*.3],[b[0],b[1]-wh*.3],[b[0],b[1]-wh*.8],[a[0],a[1]-wh*.8]],'#f4f4f4','#444');
+  ['#ffd24d','#ff8a8a','#7be0a0','#8ab8ff'].forEach((c,i)=>{const p=iso(0,2.5+i*.65);ctx.fillStyle=c;ctx.fillRect(p[0]-6*S,p[1]-wh*.7+(i%2)*14*S,12*S,10*S)})}
+ // mejas + monitor
+ const items=[];
+ A.forEach(a=>{items.push({d:a.desk[0]+a.desk[1]+1,f:()=>{box(a.desk[0],a.desk[1],2,1,16,'#e8e2d4','#b7b09f','#9d9686');
+   const m=iso(a.desk[0]+1,a.desk[1]+.4);const on=a.st==='kerja'||a.st==='error';
+   ctx.fillStyle='#222';ctx.fillRect(m[0]-14*S,m[1]-44*S,28*S,20*S);
+   ctx.fillStyle=a.st==='error'?'#ff4d4d':on?a.c:'#223';ctx.globalAlpha=on?(.6+.3*Math.sin(t/200)):1;ctx.fillRect(m[0]-12*S,m[1]-42*S,24*S,15*S);ctx.globalAlpha=1}});
+  items.push({d:a.x+a.y+.2,f:()=>person(a,t)})});
+ items.push({d:cooler[0]+cooler[1],f:()=>{box(cooler[0],cooler[1],.6,.6,18,'#dfeaf5','#aebfcc','#92a4b2');box(cooler[0]+.1,cooler[1]+.1,.4,.4,36,'#7fd1ff','#5bb5e6','#4aa2d3')}});
+ items.push({d:6.5,f:()=>{const p=iso(1.2,7);ctx.fillStyle='#3b8f4a';ctx.fillRect(p[0]-8*S,p[1]-34*S,16*S,24*S);ctx.fillStyle='#6b4a2b';ctx.fillRect(p[0]-7*S,p[1]-10*S,14*S,10*S)}});
+ items.sort((a,b)=>a.d-b.d).forEach(i=>i.f());
+ // gerak
+ A.forEach(a=>{a.t-=1;a.sayT>0&&a.sayT--;
+  if(a.t<0){a.t=300+Math.random()*500;if(Math.random()<.35){a.tx=cooler[0]-.2;a.ty=cooler[1]+1.2}else{a.tx=a.desk[0]+.5;a.ty=a.desk[1]+1.6}}
+  const dx=a.tx-a.x,dy=a.ty-a.y,dist=Math.hypot(dx,dy);a.walk=dist>.05;if(a.walk){a.x+=dx/dist*.025;a.y+=dy/dist*.025}});
+ requestAnimationFrame(draw)}
+requestAnimationFrame(draw);
+cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect(),d=devicePixelRatio||1,x=(e.clientX-r.left)*d,y=(e.clientY-r.top)*d;
+ const a=A.find(a=>a.hit&&x>a.hit[0]&&x<a.hit[0]+a.hit[2]&&y>a.hit[1]&&y<a.hit[1]+a.hit[3]);
+ if(a)document.getElementById('info').innerHTML=`<b>${a.n}</b> - ${a.role}<br>Status: ${a.st}<br>Terakhir: ${a.task}`});
+</script></body></html>
