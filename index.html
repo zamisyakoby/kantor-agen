@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Kantor Agen Ozami, desain v3.1 (tim + agen + token MiniMax), 10 Nov 2026 -->
+<!-- Kantor Agen Ozami, desain v3.2 (tim + agen + token MiniMax), 10 Nov 2026 -->
 <html lang="id">
 <head>
 <meta charset="utf-8">
@@ -63,7 +63,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-r
 </head>
 <body>
 <div class="app">
-<header><h1>Kantor Agen Ozami</h1><p>Demo · kegiatan agen disimulasikan</p></header>
+<header><h1>Kantor Agen Ozami</h1><p>Demo · kegiatan dan gerak hanya simulasi</p></header>
 <div class="grid">
  <div class="scene">
   <canvas id="c" width="270" height="170" aria-label="Ilustrasi kantor pixel: empat agen AI di baris belakang, Oby, Eva, Rahma dan Clara di baris depan"></canvas>
@@ -114,7 +114,7 @@ const AG=[
  {id:'rahma',n:'Rahma',role:'CS',c:'#7FC4B8',hair:'#3A2A22',skin:'#D9A47F',desk:[XS[2],Y2],deco:''},
  {id:'clara',n:'Clara',role:'CS',c:'#B59A86',hair:'#1C1C24',skin:'#F0C6A2',desk:[XS[3],Y2],deco:''}];
 AG.forEach((a,i)=>{a.seat=[a.desk[0]+1.15,a.desk[1]-.15];a.aisle=a.desk[0]-.22;a.x=a.seat[0];a.y=a.seat[1];
- a.path=[];a.mode='duduk';a.state=a.ai?'diam':'belum';a.say='';a.sayT=0;a.errT=0;a.wait=0;a.next=15+i*9;a.walking=false});
+ a.path=[];a.mode='duduk';a.state=a.ai?'diam':'belum';a.say='';a.sayT=0;a.errT=0;a.wait=0;a.next=(a.ai?15:8)+i*6;a.walking=false;a.ph=i*1370});
 const SH=["..hhhhh..",".hhhhhhh.",".hsssssh.",".sessses.",".sssssss.","..sssss..",".bbbbbbb.","sbbbabbbs","sbbbabbbs",".bbbbbbb."];
 const LEG={s:["..ddddd..","..dd.dd..","..dd.dd..","..oo.oo.."],a:[".ddd.ddd.",".dd...dd.",".dd...dd.",".oo...oo."],b:["..ddddd..","...d.d...","..dd.dd..","..oo.oo.."]};
 function spr(rows,ox,oy,pal){const pts=[];rows.forEach((r,j)=>{for(let i=0;i<r.length;i++)if(r[i]!=='.')pts.push([i,j,r[i]])});
@@ -122,7 +122,9 @@ function spr(rows,ox,oy,pal){const pts=[];rows.forEach((r,j)=>{for(let i=0;i<r.l
  pts.forEach(([i,j,ch])=>{X.fillStyle=pal[ch];X.fillRect(ox+i,oy+j,1,1)})}
 function drawAgent(a,tm){const [fx,fy]=P(a.x,a.y);const seated=a.mode==='duduk';
  const frame=seated?'s':(Math.floor(tm/160)%2?'a':'b');
- const rows=seated?SH:SH.concat(a.walking?LEG[frame]:LEG.s);
+ let rows=seated?SH.slice():SH.concat(a.walking?LEG[frame]:LEG.s);
+ if(seated){const t2=tm+a.ph;if(!REDUCED&&a.state!=='putus'&&Math.floor(t2/230)%2){rows[7]='sbbbabbbb';rows[8]='bbbabbbbs'}
+  if(!REDUCED&&(t2%3400)<130)rows[3]='.sssssss.'}
  const ox=Math.round(fx)-4,oy=Math.round(fy)-(seated?16:14);
  if(!seated)poly([[fx-5,fy],[fx,fy-1.5],[fx+5,fy],[fx,fy+1.5]],'#000',.35);
  spr(rows,ox,oy,{h:a.hair,s:a.skin,b:a.c,a:a.ai?'#17110E':a.c,d:'#2A2230',o:'#120C0A',e:'#17110E'});
@@ -182,18 +184,18 @@ function furniture(tm){const items=[];
 
 /* ---------- gerak (hanya agen AI) ---------- */
 const COOLER=[8.6,1.8],AISLE=3.65;
-function goCooler(a){if(!a.ai||a.mode!=='duduk'||a.errT>0)return;a.mode='jalan';a.state='jalan';
+function goCooler(a){if(a.mode!=='duduk'||a.errT>0)return;a.mode='jalan';a.state='jalan';
  a.path=[[a.aisle,a.seat[1]],[a.aisle,AISLE],[COOLER[0],AISLE],COOLER];a.after='ngopi'}
 function goBack(a){a.mode='jalan';a.state='jalan';a.path=[[COOLER[0],AISLE],[a.aisle,AISLE],[a.aisle,a.seat[1]],a.seat];a.after='duduk'}
 function say(a,t){a.say=t;a.sayT=3600}
-function step(a,dt){a.walking=false;if(!a.ai)return;
+function step(a,dt){a.walking=false;
  if(a.errT>0){a.errT-=dt;if(a.errT<=0)a.state='diam'}
  if(a.sayT>0)a.sayT-=dt;
  if(a.mode==='jalan'&&a.path.length){const [tx,ty]=a.path[0],dx=tx-a.x,dy=ty-a.y,d=Math.hypot(dx,dy),sp=1.5*dt/1000;
-  if(d<=sp){a.x=tx;a.y=ty;a.path.shift();if(!a.path.length){a.mode=a.after;if(a.after==='ngopi'){a.state='ngopi';a.wait=7000;say(a,'ngopi dulu')}else{a.mode='duduk';a.state='diam'}}}
+  if(d<=sp){a.x=tx;a.y=ty;a.path.shift();if(!a.path.length){a.mode=a.after;if(a.after==='ngopi'){a.state='ngopi';a.wait=7000;say(a,'ngopi dulu')}else{a.mode='duduk';a.state=a.ai?'diam':'belum'}}}
   else{a.x+=dx/d*sp;a.y+=dy/d*sp;a.walking=true}}
  else if(a.mode==='ngopi'){a.wait-=dt;if(a.wait<=0)goBack(a)}
- else if(a.mode==='duduk'&&!REDUCED){a.next-=dt/1000;if(a.next<=0){a.next=30+Math.random()*30;if(Math.random()<.6)goCooler(a)}}}
+ else if(a.mode==='duduk'&&!REDUCED){a.next-=dt/1000;if(a.next<=0){a.next=(a.ai?30:25)+Math.random()*30;if(Math.random()<.6)goCooler(a)}}}
 
 /* ---------- catatan, daftar, pemakaian ---------- */
 const SC={claude:['membaca catatan-remote.md','pintu uji tes: 42 lulus','pintu rilis cek: aman','menunggu konfirmasi Owner'],

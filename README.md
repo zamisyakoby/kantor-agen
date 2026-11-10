@@ -20,3 +20,5 @@ Status: dirilis di GitHub Pages. Rencana: pindah ke Cloudflare Pages + repo priv
 `./perbarui-data.sh` menulis ulang `data.json` dari `hermes insights --days 30`, lalu commit + push ke repo Pages. Halaman publik: jangan tambahkan angka kinerja/penjualan per orang.
 
 Versi: v3.1 (10 Nov 2026), label dan baris kuota dirapikan.
+
+- Gerak (v3.2): mengetik, berkedip, dan jalan ke dispenser berlaku juga untuk tim, **hanya hiasan** (bukan status nyata); `prefers-reduced-motion` mematikannya.
