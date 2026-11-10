@@ -1,7 +1,7 @@
 # Demo kantor agen Ozami
 
 Halaman statis satu berkas (`index.html`): kantor pixel-art isometrik berisi agen Ozami (Claude VPS, Hermes, Zamisyak, Pintu Web) + daftar status + catatan kegiatan.
-Kegiatan agen **disimulasikan**; yang nyata: nama & peran tim (dari catatan Discord/CRM: Oby Owner; Eva, Rahma, Clara CS) dan pemakaian token MiniMax (`data.json`, dari `hermes insights`). Status tim = "belum tersambung" (tidak dikarang). Sisa kuota Claude & MiniMax belum bisa dibaca dari VPS (ditulis jujur). Tidak ada rahasia, tidak ada data pelanggan/angka kinerja per orang. Rilis: https://zamisyakoby.github.io/kantor-agen/
+Kegiatan agen **disimulasikan**; yang nyata: nama & peran tim (dari catatan Discord/CRM: Oby Owner; Eva, Rahma, Clara CS) dan pemakaian token MiniMax (`data.json`, dari `hermes insights`). Status tim tidak ditampilkan (tidak dikarang; Owner memutuskan tidak menyambungkan). Sisa kuota Claude & MiniMax tidak ditampilkan (tidak terbaca dari VPS; Owner memutuskan tidak disambungkan). Tidak ada rahasia, tidak ada data pelanggan/angka kinerja per orang. Rilis: https://zamisyakoby.github.io/kantor-agen/
 
 ## Keputusan desain (skill `webapp-design`) dan alasannya
 - **Palet milik brand zamisyak** (`bg #17110E`, krem `#F1E9E1`, aksen mawar `#E8A49A`, ok/err `#8FD19E`/`#F2A0A0`) supaya dikenali sebagai halaman zamisyakoby, bukan biru-ungu SaaS. Tanpa kuning.

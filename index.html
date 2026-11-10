@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Kantor Agen Ozami, desain v3 (tim + agen + pemakaian AI), 10 Nov 2026 -->
+<!-- Kantor Agen Ozami, desain v3.1 (tim + agen + token MiniMax), 10 Nov 2026 -->
 <html lang="id">
 <head>
 <meta charset="utf-8">
@@ -207,7 +207,7 @@ function log(a,t,bad){empty.style.display='none';const li=document.createElement
  while(feed.children.length>40)feed.removeChild(feed.children[1]);
  say(a,t.length>28?t.slice(0,27)+'…':t);if(a.mode==='duduk'&&!bad)a.state='kerja';addNote(a.c)}
 function work(a){if(!a.ai||a.mode!=='duduk'||a.errT>0)return;const s=SC[a.id];log(a,s[Math.floor(Math.random()*s.length)])}
-AG.forEach(a=>{const li=document.createElement('li');li.innerHTML=`<i class="sw" style="background:${a.c}"></i><span class="nm">${a.n}<span class="rl">${a.role}</span></span><span class="st" id="st-${a.id}">${a.ai?'diam':'belum tersambung'}</span>`;
+AG.forEach(a=>{const li=document.createElement('li');li.innerHTML=`<i class="sw" style="background:${a.c}"></i><span class="nm">${a.n}<span class="rl">${a.role}</span></span><span class="st" id="st-${a.id}">${a.ai?'diam':''}</span>`;
  document.getElementById(a.ai?'ra':'rt').appendChild(li)});
 const STT={kerja:'bekerja',ngopi:'ngopi',jalan:'jalan',putus:'putus',diam:'diam'};
 function paintRoster(){AG.filter(a=>a.ai).forEach(a=>{const e=document.getElementById('st-'+a.id);const s=a.errT>0?'putus':a.state;e.textContent=STT[s];e.className='st '+s})}
@@ -222,9 +222,7 @@ const nf=n=>n==null?'-':new Intl.NumberFormat('id-ID').format(n);
 function pakai(d){const u=document.getElementById('use'),m=d.minimax||{};
  document.getElementById('usets').textContent='· data nyata, diperbarui '+d.diperbarui;
  u.innerHTML=`<div><span>MiniMax lewat Hermes, 30 hari (${m.model})</span><b>${nf(m.token_total)} token</b></div>
- <div><span>Masuk / keluar (di luar cache)</span><b>${nf(m.input)} / ${nf(m.output)}</b></div>
- <div class="na"><span>Sisa kuota MiniMax</span><b>${m.sisa_kuota==null?'belum bisa dibaca dari VPS':nf(m.sisa_kuota)}</b></div>
- <div class="na"><span>Sisa kuota Claude</span><b>${(d.claude||{}).sisa_kuota==null?'belum bisa dibaca dari VPS':d.claude.sisa_kuota}</b></div>`}
+ <div><span>Masuk / keluar (di luar cache)</span><b>${nf(m.input)} / ${nf(m.output)}</b></div>`}
 function pakaiGagal(){document.getElementById('use').innerHTML='<div><span>Data pemakaian belum bisa dimuat. Muat ulang halaman nanti.</span><b></b></div>'}
 if(typeof fetch==='function')fetch('data.json',{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject()).then(pakai).catch(pakaiGagal);
 
