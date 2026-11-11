@@ -1,0 +1,17 @@
+# Tempel di bawah services: di /srv/ozami/docker-compose.yml (proyek "ozami").
+# Repo ini di-clone ke /srv/ozami/apps/kantor-agen.
+  kantor-virtual:
+    <<: *aman
+    build:
+      context: ./apps/kantor-agen
+      dockerfile: deploy/Dockerfile
+    image: ozami/kantor-virtual:1
+    container_name: ozami-kantor-virtual
+    env_file: apps-env/kantor-virtual.env
+    volumes:
+      - ./data/kantor-virtual:/data            # tim.json, status-tim.json, data.json (MiniMax)
+    networks: [dalam, luar]                    # dalam: crm-db; luar: Discord
+    ports:
+      - "127.0.0.1:8491:8080"                  # nginx aaPanel (kantor.ozami.co.id)
+    mem_limit: 256m
+    depends_on: [crm-db]

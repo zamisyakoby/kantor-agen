@@ -1,24 +1,25 @@
-# Demo kantor agen Ozami
+# Kantor Virtual Ozami
 
-Halaman statis satu berkas (`index.html`): kantor pixel-art isometrik berisi agen Ozami (Claude VPS, Hermes, Zamisyak, Pintu Web) + daftar status + catatan kegiatan.
-Kegiatan agen **disimulasikan**; yang nyata: nama & peran tim (dari catatan Discord/CRM: Oby Owner; Eva, Rahma, Clara CS) dan pemakaian token MiniMax (`data.json`, dari `hermes insights`). Status tim tidak ditampilkan (tidak dikarang; Owner memutuskan tidak menyambungkan). Sisa kuota Claude & MiniMax tidak ditampilkan (tidak terbaca dari VPS; Owner memutuskan tidak disambungkan). Tidak ada rahasia, tidak ada data pelanggan/angka kinerja per orang. Rilis: https://zamisyakoby.github.io/kantor-agen/
+Halaman statis satu berkas (`index.html`): kantor pixel-art isometrik berisi agen Ozami (Claude VPS, Hermes, Anak Sosmed, Pintu Web) + daftar status + catatan kegiatan.
+Kegiatan agen **disimulasikan**; yang nyata: nama & peran tim (dari catatan Discord/CRM: Oby Owner; Eva, Rahma, Clara Staff) dan pemakaian token MiniMax (`data.json`, dari `hermes insights`). **Status tim nyata dari Discord** (v3.3): tim absen lewat `/masuk`, `/istirahat`, `/pulang` di bot Discord (`bot/`), bot menulis `status-tim.json`. Hanya status + jam, tanpa angka kinerja. Sisa kuota Claude & MiniMax tidak ditampilkan (tidak terbaca dari VPS; Owner memutuskan tidak disambungkan). Tidak ada rahasia, tidak ada data pelanggan/angka kinerja per orang. Rilis: https://zamisyakoby.github.io/kantor-agen/
 
-## Keputusan desain (skill `webapp-design`) dan alasannya
-- **Palet milik brand zamisyak** (`bg #17110E`, krem `#F1E9E1`, aksen mawar `#E8A49A`, ok/err `#8FD19E`/`#F2A0A0`) supaya dikenali sebagai halaman zamisyakoby, bukan biru-ungu SaaS. Tanpa kuning.
-- **Font**: IBM Plex Sans Condensed (isi) + Caveat (balon ucapan), keduanya sudah dipakai di desain carousel.
-- **Pixel art sungguhan**: kanvas 240x160 digambar piksel demi piksel lalu diperbesar tanpa penghalusan; bukan poligon halus. Alasannya: tampak seperti game kantor, bukan diagram.
-- **Satu elemen yang diingat**: papan tempelan di dinding kiri. Tiap tempelan = satu pekerjaan terbaru, warnanya milik agen pengerjanya; terbaca sekilas tanpa membuka daftar.
-- **Jendela senja** memakai warna mawar brand; tanpa dekorasi lain.
-- **Daftar & catatan berupa baris bergaris tipis**, bukan kartu seragam; status ditulis dengan kata (bekerja/ngopi/putus), bukan hanya warna.
-- **State nyata**: memuat (bilah "Menyambung ke kantor"), kosong ("Belum ada kegiatan"), error (Hermes putus: tanda seru di kepala, baris merah, status "putus").
-- **HP dulu**: satu kolom di bawah 860px; dua kolom di layar lebar. `prefers-reduced-motion` mematikan jalan-jalan dan kedip.
-- Daftar agen & tampilan **tidak memuat data pelanggan**; semua teks kegiatan karangan.
+## Keputusan desain (v4) dan alasannya
+- **Logo & palet CRM Ozami** (crm.ozami.co.id): logo `aset/ozami-logo.png` (diambil dari CRM), biru primer `#2453C9`, navy `#121521`/`#1A1F2E`, krem `#FAF8F4`, font Outfit. Supaya kantor terasa satu keluarga dengan CRM.
+- **Gelap & terang**: ikut pengaturan HP/laptop, bisa diganti lewat tombol di kanan atas (diingat di browser). Mode gelap = kantor malam, mode terang = kantor siang. Logo jadi putih di mode gelap seperti di CRM.
+- **4 ruangan bersekat kaca**: Ruang Agen AI, Ruang Staff, Ruang Rapat, Pantry. Penghuni berjalan antar-ruangan lewat pintu (jalur dicari otomatis), mampir ke pantry, rapat, atau meja rekan.
+- **Status tim nyata**: staff yang belum masuk/sudah pulang tidak ada di kursinya; yang masuk datang dari pintu depan, yang pulang berjalan keluar; yang istirahat ke pantry.
+- **Pixel art sungguhan**: kanvas 400x244 digambar piksel demi piksel lalu diperbesar tanpa penghalusan. Di HP kantornya bisa digeser ke samping.
+- **Papan tempelan** di dinding Ruang Agen AI: tiap tempelan = satu pekerjaan agen terbaru, warnanya milik agen itu.
+- `prefers-reduced-motion` mematikan jalan-jalan dan kedip (penghuni langsung pindah tempat).
+- Tidak memuat data pelanggan; semua teks kegiatan agen karangan.
 
 Status: dirilis di GitHub Pages. Rencana: pindah ke Cloudflare Pages + repo private setelah token Pages tersedia.
 
-## Memperbarui data nyata
-`./perbarui-data.sh` menulis ulang `data.json` dari `hermes insights --days 30`, lalu commit + push ke repo Pages. Halaman publik: jangan tambahkan angka kinerja/penjualan per orang.
+## Menjalankan
+Produksi: server Hostinger (`/srv/ozami`), kotak `ozami-kantor-virtual` di balik login akun CRM. Langkah lengkap: `deploy/DEPLOY.md`.
+- `server/server.js`: login (akun CRM, bcrypt, akun MySQL khusus baca), sesi cookie, halaman + data.
+- `server/bot.js`: bot Discord `/masuk`, `/istirahat`, `/pulang`, `/status` → `status-tim.json`.
+- `deploy/perbarui-minimax.sh`: `data.json` dari `hermes insights` (cron tiap jam).
+Halaman publik di GitHub Pages hanya pajangan tanpa status nyata.
 
-Versi: v3.1 (10 Nov 2026), label dan baris kuota dirapikan.
-
-- Gerak (v3.2): mengetik, berkedip, dan jalan ke dispenser berlaku juga untuk tim, **hanya hiasan** (bukan status nyata); `prefers-reduced-motion` mematikannya.
+Versi: v4.1 (11 Nov 2026): nama Kantor Virtual, login akun CRM, tombol Discord & CRM, pantry 3 zona (PS5, bar kopi, mini soccer), Eva & Rahma berjilbab, Clara rambut panjang.

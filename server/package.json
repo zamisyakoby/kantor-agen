@@ -1,0 +1,9 @@
+{
+  "name": "kantor-virtual-ozami",
+  "private": true,
+  "description": "Kantor Virtual Ozami: login akun CRM, halaman kantor, bot Discord absen",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=20" },
+  "dependencies": { "bcryptjs": "^2.4.3", "discord.js": "^14.16.3", "mysql2": "^3.11.3" }
+}
