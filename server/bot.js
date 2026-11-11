@@ -37,7 +37,7 @@ function mulai({ token, guildId, channelId, dataDir, timFile }) {
     }
   }
 
-  client.once('ready', async () => {
+  client.once('clientReady', async () => {
     // Daftarkan perintah satu per satu (POST = tambah/perbarui), TIDAK menimpa perintah bot lain di server.
     const rest = new REST().setToken(token);
     for (const c of PERINTAH) await rest.post(Routes.applicationGuildCommands(client.user.id, guildId), { body: c });

@@ -55,7 +55,8 @@ const cookie = (v, umur) => `kv_sesi=${v}; Path=/; HttpOnly; SameSite=Lax; Max-A
 
 /* ---------- batas percobaan login: 8 gagal per 15 menit per IP ---------- */
 const gagal = new Map();
-const ipDari = req => (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+// X-Real-IP diisi nginx dari alamat asli; X-Forwarded-For bisa ditambah-tambahi pengunjung, jadi tidak dipakai.
+const ipDari = req => String(req.headers['x-real-ip'] || req.socket.remoteAddress || '').trim();
 function terblokir(ip) { const g = gagal.get(ip); if (!g) return false; if (Date.now() > g.sampai) { gagal.delete(ip); return false; } return g.n >= 8; }
 function catatGagal(ip) { const g = gagal.get(ip) || { n: 0, sampai: Date.now() + 15 * 60e3 }; g.n++; gagal.set(ip, g); }
 

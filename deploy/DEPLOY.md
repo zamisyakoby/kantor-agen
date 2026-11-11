@@ -42,7 +42,7 @@ Satu kotak `ozami-kantor-virtual` (Node 20):
 6. **Data MiniMax**: jalankan `deploy/perbarui-minimax.sh` sekali (harus mencetak JSON berisi angka), lalu cron host tiap jam:
    `7 * * * * /srv/ozami/apps/kantor-agen/deploy/perbarui-minimax.sh >/dev/null 2>&1`
 
-7. **Domain**: aaPanel > Website > `kantor.ozami.co.id` (+ SSL) dengan `deploy/nginx-kantor.conf`.
+7. **Domain**: aaPanel > Website > `kantor.ozami.co.id` (situs id 7) + reverse proxy ke `127.0.0.1:8491` + SSL Let's Encrypt (sudah terpasang 11 Nov 2026; SSL hanya bisa diminta saat proxy dimatikan sebentar).
    Kalau DNS `kantor.ozami.co.id` belum ada, minta Owner menambah A record ke IP server (sama dengan `crm.ozami.co.id`);
    sementara itu bisa lewat tailscale serve.
 
