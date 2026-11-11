@@ -18,7 +18,7 @@ Status: dirilis di GitHub Pages. Rencana: pindah ke Cloudflare Pages + repo priv
 ## Menjalankan
 Produksi: server Hostinger (`/srv/ozami`), kotak `ozami-kantor-virtual` di balik login akun CRM. Langkah lengkap: `deploy/DEPLOY.md`.
 - `server/server.js`: login (akun CRM, bcrypt, akun MySQL khusus baca), sesi cookie, halaman + data.
-- `server/bot.js`: bot Discord `/masuk`, `/istirahat`, `/pulang`, `/status` → `status-tim.json`.
+- `server/bot.js`: bot Discord `/masuk`, `/istirahat`, `/pulang`, `/kantor` → `status-tim.json`.
 - `deploy/perbarui-minimax.sh`: `data.json` dari `hermes insights` (cron tiap jam).
 Halaman publik di GitHub Pages hanya pajangan tanpa status nyata.
 

@@ -1,4 +1,4 @@
-// Bot Discord absen Kantor Virtual Ozami: /masuk, /istirahat, /pulang, /status.
+// Bot Discord absen Kantor Virtual Ozami: /masuk, /istirahat, /pulang, /kantor (bukan /status: itu milik Hermes).
 // Status ditulis ke DATA_DIR/status-tim.json; halaman membacanya lewat server (di balik login).
 const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, MessageFlags } = require('discord.js');
 const fs = require('fs');
@@ -9,7 +9,7 @@ const PERINTAH = [
   new SlashCommandBuilder().setName('masuk').setDescription('Mulai kerja (atau lanjut kerja setelah istirahat)'),
   new SlashCommandBuilder().setName('istirahat').setDescription('Istirahat sebentar'),
   new SlashCommandBuilder().setName('pulang').setDescription('Selesai kerja hari ini'),
-  new SlashCommandBuilder().setName('status').setDescription('Lihat siapa yang sedang kerja'),
+  new SlashCommandBuilder().setName('kantor').setDescription('Lihat siapa yang sedang kerja di Kantor Virtual'),
 ].map(c => c.toJSON());
 const KE = { masuk: 'bekerja', istirahat: 'istirahat', pulang: 'pulang' };
 
@@ -50,9 +50,9 @@ function mulai({ token, guildId, channelId, dataDir, timFile }) {
   });
 
   client.on('interactionCreate', async it => {
-    if (!it.isChatInputCommand() || !(it.commandName in KE || it.commandName === 'status')) return;
+    if (!it.isChatInputCommand() || !(it.commandName in KE || it.commandName === 'kantor')) return;
     await cekHari();
-    if (it.commandName === 'status') {
+    if (it.commandName === 'kantor') {
       return it.reply({ content: `**Kantor hari ini** (${data.tanggal})\n${S.ringkasan(data, TIM)}`, allowedMentions: { parse: [] } });
     }
     const orang = byDiscord[it.user.id];

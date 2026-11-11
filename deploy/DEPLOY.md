@@ -7,7 +7,7 @@ Ikuti aturan proyek: port hanya `127.0.0.1`, tidak mount docker.sock, rahasia ha
 Satu kotak `ozami-kantor-virtual` (Node 20):
 - **Login** pakai akun CRM Ozami: email + password dicek ke `ozami_crm.tbl_users` (bcrypt), lewat akun MySQL khusus baca.
 - **Halaman kantor** (`index.html`) + `/data.json` (token MiniMax) + `/status-tim.json` (absen), semuanya hanya setelah login.
-- **Bot Discord** `/masuk` `/istirahat` `/pulang` `/status`, menulis `/data/status-tim.json`.
+- **Bot Discord** `/masuk` `/istirahat` `/pulang` `/kantor`, menulis `/data/status-tim.json`.
 
 ## Langkah
 
@@ -49,7 +49,7 @@ Satu kotak `ozami-kantor-virtual` (Node 20):
 8. **Uji** (semua harus lolos sebelum lapor selesai):
    - `curl -s 127.0.0.1:8491/sehat` → `ok`; `curl -sI 127.0.0.1:8491/` → 302 ke `/login`; `curl -s -o /dev/null -w '%{http_code}' 127.0.0.1:8491/status-tim.json` → 401
    - Login salah → pesan "Email atau password salah"; login benar (Owner yang coba) → halaman kantor, nama tampil di kanan atas.
-   - Di Discord: `/status` dibalas bot; Owner `/masuk` → di halaman Oby duduk di mejanya dalam ≤1 menit.
+   - Di Discord: `/kantor` dibalas bot; Owner `/masuk` → di halaman Oby duduk di mejanya dalam ≤1 menit.
    - Bagian "Pemakaian AI" menampilkan angka MiniMax terbaru.
 
 9. **GitHub Pages**: halaman lama di `zamisyakoby.github.io/kantor-agen` masih terbuka tanpa login (tanpa status nyata).
